@@ -15,6 +15,8 @@ const contentNavItems: NavItem[] = [
     { to: "/admin", label: "Dashboard Utama", icon: "dashboard", end: true },
     { to: "/admin/berita", label: "Berita Sekolah", icon: "news" },
     { to: "/admin/program", label: "Program Unggulan", icon: "star" },
+    { to: "/admin/talent-day", label: "Talent Day", icon: "sparkles" },
+    { to: "/admin/ekskul", label: "Ekstrakurikuler", icon: "trophy" },
     { to: "/admin/fasilitas", label: "Fasilitas & Sarana", icon: "building" },
 ];
 
@@ -26,6 +28,7 @@ const portalNavItems: { href: string; label: string; icon: AdminIconName }[] = [
     { href: "/", label: "Beranda Utama", icon: "globe" },
     { href: "/berita", label: "Halaman Berita", icon: "news" },
     { href: "/fasilitas", label: "Halaman Fasilitas", icon: "building" },
+    { href: "/kegiatan", label: "Halaman Kegiatan Siswa", icon: "trophy" },
 ];
 
 type DashboardShortcutItem = {
@@ -70,6 +73,14 @@ function getPageTitle(pathname: string): string {
     if (pathname.startsWith("/admin/program")) {
         if (pathname.includes("/baru")) return "Tambah Program Unggulan";
         return "Kelola Program Unggulan";
+    }
+    if (pathname.startsWith("/admin/talent-day")) {
+        if (pathname.includes("/baru")) return "Tambah Talent Day";
+        return "Kelola Talent Day";
+    }
+    if (pathname.startsWith("/admin/ekskul")) {
+        if (pathname.includes("/baru")) return "Tambah Ekstrakurikuler";
+        return "Kelola Ekstrakurikuler";
     }
     if (pathname.startsWith("/admin/fasilitas")) {
         if (pathname.includes("/baru")) return "Tambah Fasilitas";

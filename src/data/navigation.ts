@@ -24,6 +24,7 @@ export const navItems: (MenuLink | MenuGroup)[] = [
             { label: "Tentang Kami", href: "/tentang" },
             { label: "Profil Guru", href: "/profil-guru" },
             { label: "Fasilitas", href: "/fasilitas" },
+            { label: "Ekskul & Talent Day", href: "/kegiatan" },
         ],
     },
     {

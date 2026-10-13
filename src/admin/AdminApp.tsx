@@ -11,6 +11,8 @@ import ProgramListPage from "./pages/programs/ProgramListPage";
 import ProgramFormPage from "./pages/programs/ProgramFormPage";
 import FacilityListPage from "./pages/facilities/FacilityListPage";
 import FacilityFormPage from "./pages/facilities/FacilityFormPage";
+import ActivityListPage from "./pages/activities/ActivityListPage";
+import ActivityFormPage from "./pages/activities/ActivityFormPage";
 import AccountPage from "./pages/AccountPage";
 
 // Panel admin di /admin. Dimuat terpisah (lazy) dari situs utama, jadi pengunjung tidak ikut mengunduh kodenya
@@ -31,6 +33,13 @@ export default function AdminApp() {
                         <Route path="fasilitas" element={<FacilityListPage />} />
                         <Route path="fasilitas/baru" element={<FacilityFormPage />} />
                         <Route path="fasilitas/:id" element={<FacilityFormPage />} />
+                        {/* key: pindah dari halaman Talent Day ke ekskul memasang ulang halamannya (isian form tidak terbawa) */}
+                        <Route path="talent-day" element={<ActivityListPage key="talent_day" category="talent_day" />} />
+                        <Route path="talent-day/baru" element={<ActivityFormPage key="talent_day" category="talent_day" />} />
+                        <Route path="talent-day/:id" element={<ActivityFormPage key="talent_day" category="talent_day" />} />
+                        <Route path="ekskul" element={<ActivityListPage key="ekskul" category="ekskul" />} />
+                        <Route path="ekskul/baru" element={<ActivityFormPage key="ekskul" category="ekskul" />} />
+                        <Route path="ekskul/:id" element={<ActivityFormPage key="ekskul" category="ekskul" />} />
                         <Route path="akun" element={<AccountPage />} />
                         <Route path="*" element={<AdminNotFound />} />
                     </Route>

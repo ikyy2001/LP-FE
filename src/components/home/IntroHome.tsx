@@ -26,7 +26,7 @@ export default function IntroHome() {
 
                 <div className="mt-12 md:mt-16 grid gap-10 lg:gap-14 lg:grid-cols-[5fr_6fr] lg:items-center">
                     {/* Video di kanan pada desktop, di atas teks pada HP & tablet */}
-                    <div className="relative lg:order-last">
+                    <div data-speed="-0.05" className="relative lg:order-last">
                         {/* aspect-video = rasio asli video (16:9), jadi video tampil utuh tanpa terpotong */}
                         <video
                             ref={videoRef}

@@ -57,7 +57,7 @@ export default function ProgramListPage() {
         <>
             <PageHeader
                 title="Program Unggulan"
-                description="Tampil di carousel beranda sesuai urutan di bawah, masing-masing dengan halaman detail sendiri."
+                description="Tampil sebagai kartu di beranda sesuai urutan di bawah, masing-masing dengan halaman detail sendiri."
                 actions={
                     <Link to="/admin/program/baru" className={buttonPrimary}>
                         <AdminIcon name="plus" className="w-4 h-4" />

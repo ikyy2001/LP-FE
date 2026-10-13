@@ -6,7 +6,7 @@ export default function PrincipalHome() {
         <section className="relative z-10 text-brand-ink px-6 py-20 md:py-28 bg-brand-softmist">
             <div className="max-w-6xl mx-auto">
                 <div className="mt-12 md:mt-16 grid gap-10 md:gap-16 md:grid-cols-[2fr_3fr] items-start">
-                    <figure className="w-full max-w-sm mx-auto md:max-w-none">
+                    <figure data-speed="0.08" className="w-full max-w-sm mx-auto md:max-w-none">
                         <img
                             src={fotoKepsek}
                             alt="Kepala Sekolah SMK Plus Pelita Nusantara"

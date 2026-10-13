@@ -69,6 +69,18 @@ export default function DashboardPage() {
                         Program Unggulan
                     </Link>
                     <Link
+                        to="/admin/talent-day"
+                        className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                    >
+                        Talent Day
+                    </Link>
+                    <Link
+                        to="/admin/ekskul"
+                        className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                    >
+                        Ekstrakurikuler
+                    </Link>
+                    <Link
                         to="/admin/fasilitas"
                         className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                     >

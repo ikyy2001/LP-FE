@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide, type SwiperClass } from "swiper/react";
-import { A11y, Keyboard } from "swiper/modules";
+import { A11y, Autoplay, Keyboard } from "swiper/modules";
 import "swiper/css";
 import LoadError from "../LoadError";
 import Skeleton from "../Skeleton";
@@ -12,6 +12,8 @@ import { useFacilities } from "../../lib/content";
 export default function FacilitiesHome() {
     const [swiper, setSwiper] = useState<SwiperClass | null>(null);
     const [active, setActive] = useState(0);
+    // Geser otomatis dimatikan untuk pengguna yang memilih "kurangi animasi" di perangkatnya
+    const [reduceMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     const { facilities, error, reload } = useFacilities();
     // Hanya fasilitas yang sudah punya foto, supaya slider beranda tidak berisi kotak ikon
     const photoFacilities = (facilities ?? []).filter((f) => (f.images?.length ?? 0) > 0);
@@ -46,8 +48,11 @@ export default function FacilitiesHome() {
                 ) : photoFacilities.length > 0 && (
                     <>
                         <Swiper
-                            modules={[A11y, Keyboard]}
+                            modules={[A11y, Autoplay, Keyboard]}
                             loop
+                            // Geser sendiri ke kanan tiap 4 detik. Tetap jalan setelah pengguna swipe / menekan panah
+                            // (timer diulang dari awal), berhenti sementara saat kursor ada di atas slider
+                            autoplay={reduceMotion ? false : { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}
                             keyboard={{ enabled: true, onlyInViewport: true }}
                             slidesPerView={1.15}
                             // spaceBetween 24 = gap-6: ujung bingkai coretan kebablasan ±8px, jadi kartu bersebelahan tidak saling tabrak

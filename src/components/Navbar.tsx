@@ -130,6 +130,8 @@ export default function Navbar() {
                 ref={dialogRef}
                 aria-label="Menu navigasi"
                 onClose={closeMenu}
+                // Lenis tidak ikut memproses scroll di dalam menu, jadi halaman di belakangnya tetap diam
+                data-lenis-prevent
                 className="pointer-events-auto size-full max-w-none max-h-none flex-col overscroll-contain bg-brand-darkred/95 backdrop-blur-lg p-6 sm:p-8 text-brand-mist open:flex"
             >
                 <div className="flex items-center justify-between gap-4">

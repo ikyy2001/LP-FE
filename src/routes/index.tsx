@@ -9,6 +9,8 @@ import Facilities from "../pages/facilities/Facilities";
 import News from "../pages/news/News";
 import NewsDetail from "../pages/news/NewsDetail";
 import ProgramDetail from "../pages/programs/ProgramDetail";
+import Activities from "../pages/activities/Activities";
+import ActivityDetail from "../pages/activities/ActivityDetail";
 import LoginPage from "../pages/login/LoginPage";
 import NotFound from "../pages/notfound/NotFound";
 
@@ -27,6 +29,8 @@ export default function AppRoutes() {
       <Route path="/berita" element={<News />} />
       <Route path="/berita/:slug" element={<NewsDetail />} />
       <Route path="/program/:slug" element={<ProgramDetail />} />
+      <Route path="/kegiatan" element={<Activities />} />
+      <Route path="/kegiatan/:slug" element={<ActivityDetail />} />
       <Route path="/login" element={<LoginPage />} />
       <Route
         path="/admin/*"

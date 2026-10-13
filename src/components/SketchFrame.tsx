@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { refreshScrollFrame, useScrollFrame } from "../lib/smoothScroll";
 
 // Kumpulan hiasan "coretan tangan". Semua goresan "digambar" sekali saat pertama kali terlihat di layar
 // (langsung tampil kalau pengguna memilih kurangi animasi).
@@ -146,6 +147,94 @@ export function SketchBox({ delay = 0, tone = "text-brand-darkred" }: { delay?: 
             <SketchRule bold delay={delay + 500} className={`${tone} -left-2 -right-2 -bottom-1 h-3 rotate-180`} />
             <SketchRule bold vertical delay={delay + 750} className={`${tone} -top-2 -bottom-2 -left-1 w-3 -scale-y-100`} />
         </>
+    )
+}
+
+// Penanda posisi scroll: garis tegak coretan di tepi kanan layar yang "digambar" mengikuti scroll halaman,
+// lengkap dengan ujung pena. Garis tipis samar di belakangnya = jalur yang belum tergambar.
+// Muncul setelah hero lewat (desktop saja). Pasang sekali per halaman, posisinya fixed.
+export function SketchProgress() {
+    const ref = useRef<HTMLDivElement>(null);
+    const pathRefs = useRef<(SVGPathElement | null)[]>([]);
+    const nibRef = useRef<SVGCircleElement>(null);
+    const [size, setSize] = useState<{ w: number; h: number } | null>(null);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const resizeObserver = new ResizeObserver(() => setSize({ w: el.offsetWidth, h: el.offsetHeight }));
+        resizeObserver.observe(el);
+        return () => resizeObserver.disconnect();
+    }, []);
+
+    // Goresan baru ada setelah ukurannya diketahui, jadi gambar ulang tanpa menunggu scroll berikutnya
+    useEffect(() => {
+        if (size) refreshScrollFrame();
+    }, [size]);
+
+    useScrollFrame(({ scroll, limit }) => {
+        const el = ref.current;
+        if (!el) return;
+
+        const vh = window.innerHeight;
+        // Mulai terlihat saat hero setengah tertutup, penuh saat hero tertutup
+        el.style.opacity = Math.min(Math.max((scroll - vh * 0.5) / (vh * 0.5), 0), 1).toFixed(3);
+        const progress = limit > 0 ? Math.min(Math.max(scroll / limit, 0), 1) : 0;
+
+        pathRefs.current.forEach((path, i) => {
+            if (!path) return;
+            const length = path.getTotalLength();
+            // Goresan tipis sedikit tertinggal di belakang goresan tebal, seperti ditimpa dua kali
+            const p = Math.max(progress - i * 0.025, 0);
+            path.style.strokeDasharray = `${length}`;
+            path.style.strokeDashoffset = `${(length * (1 - p)).toFixed(2)}`;
+
+            if (i === 0 && nibRef.current) {
+                const point = path.getPointAtLength(length * p);
+                nibRef.current.setAttribute("cx", point.x.toFixed(2));
+                nibRef.current.setAttribute("cy", point.y.toFixed(2));
+            }
+        });
+    });
+
+    const [vbW, vbH] = [12, 300];
+    const scale = (d: string) => (size ? scalePath(d, size.w / vbW, size.h / vbH) : "");
+
+    return(
+        <div
+            ref={ref}
+            aria-hidden="true"
+            className="pointer-events-none fixed right-3 xl:right-5 top-1/2 -translate-y-1/2 z-40 hidden lg:block w-3 h-[46vh] opacity-0"
+        >
+            {size && size.h > 0 && (
+                <svg
+                    className="block overflow-visible"
+                    width={size.w}
+                    height={size.h}
+                    viewBox={`0 0 ${size.w} ${size.h}`}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    {ruleDownStrokes.map((stroke) => (
+                        <path key={stroke.d} d={scale(stroke.d)} strokeWidth={stroke.width} className="text-brand-ink/15" />
+                    ))}
+                    {lineDownStrokes.map((stroke, i) => (
+                        <path
+                            key={stroke.d}
+                            ref={(node) => {
+                                pathRefs.current[i] = node;
+                            }}
+                            d={scale(stroke.d)}
+                            strokeWidth={stroke.width}
+                            className="text-brand-darkred"
+                        />
+                    ))}
+                    <circle ref={nibRef} r={3.5} className="fill-brand-darkred stroke-none" />
+                </svg>
+            )}
+        </div>
     )
 }
 

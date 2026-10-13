@@ -74,8 +74,9 @@ export default function MajorsCarousel({ majors }: { majors: Major[] }) {
             {/* Desktop: kartu berjajar. Lebar kartu selalu 1/5 baris (sama dengan beranda),
                 kalau kartunya kurang dari 5 barisnya ditaruh di tengah */}
             <ul className="mt-12 hidden lg:flex lg:justify-center lg:gap-4">
-                {majors.map((major) => (
-                    <li key={major.code} className="w-[calc((100%-4rem)/5)]">
+                {/* data-speed: di beranda kartu bergantian naik-turun pelan saat discroll (lihat useParallax) */}
+                {majors.map((major, i) => (
+                    <li key={major.code} data-speed={i % 2 === 0 ? 0.04 : -0.04} className="w-[calc((100%-4rem)/5)]">
                         <MajorCard major={major} />
                     </li>
                 ))}
