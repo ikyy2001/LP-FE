@@ -165,7 +165,7 @@ export default function AdminLayout() {
                                         <img src={logoSekolah} alt="Logo" className="h-full w-full object-contain" />
                                     </div>
                                     <div className="min-w-0">
-                                        <div className="font-extrabold text-base leading-tight tracking-tight text-[#0F172A] truncate">
+                                        <div className="font-bold text-base leading-tight tracking-tight text-[#0F172A] truncate">
                                             Panel Admin
                                         </div>
                                         <div className="text-[10px] font-medium text-[#64748B] truncate">
@@ -319,7 +319,7 @@ export default function AdminLayout() {
                             <img src={logoSekolah} alt="Logo" className="h-full w-full object-contain" />
                         </div>
                         <div className="min-w-0">
-                            <div className="font-extrabold text-base leading-tight tracking-tight text-[#0F172A] truncate">
+                            <div className="font-bold text-base leading-tight tracking-tight text-[#0F172A] truncate">
                                 Panel Admin
                             </div>
                             <div className="text-[10px] font-medium text-[#64748B] truncate">
@@ -470,7 +470,7 @@ export default function AdminLayout() {
 
                         {/* Page Title */}
                         <div>
-                            <h1 className="font-extrabold text-base sm:text-xl tracking-tight text-[#0F172A] truncate leading-tight">
+                            <h1 className="font-bold text-base sm:text-xl tracking-tight text-[#0F172A] truncate leading-tight">
                                 {pageTitle}
                             </h1>
                         </div>

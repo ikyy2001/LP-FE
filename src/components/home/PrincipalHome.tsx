@@ -16,7 +16,7 @@ export default function PrincipalHome() {
                     </figure>
 
                     <div className="space-y-8">
-                        <h2 className="text-center md:text-justify font-display text-3xl md:text-4xl font-bold uppercase tracking-wide leading-tight">
+                        <h2 className="text-center md:text-left font-display text-3xl md:text-4xl font-bold uppercase tracking-wide leading-tight">
                             {/* md:-ml-5: saat rata kiri, teks tetap sejajar paragraf di bawahnya */}
                             <SketchFrame className="md:-ml-5">Sambutan Kepala Sekolah</SketchFrame>
                         </h2>
@@ -25,7 +25,7 @@ export default function PrincipalHome() {
                             berakhlak. Melalui Bursa Kerja Khusus (BKK), kami menjembatani siswa dan alumni dengan
                             peluang Praktik Kerja Lapangan serta karier di berbagai industri mitra.
                         </p>
-                        <figcaption className="mt-4 text-center md:text-justify">
+                        <figcaption className="mt-4 text-center md:text-left">
                             <span className="block font-semibold">Ibu Sri Mildawati, M.Pd</span>
                             <span className="text-sm text-brand-ink/60">Kepala Sekolah SMK Plus Pelita Nusantara</span>
                         </figcaption>

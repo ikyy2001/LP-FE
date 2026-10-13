@@ -44,7 +44,7 @@ export default function MajorCard({ major }: { major: Major }) {
                     <SketchRule bold vertical className="inset-0 text-white/80" />
                 </span>
                 <span className="min-w-0 drop-shadow-md">
-                    <span className="block text-xl font-extrabold leading-tight">{major.code}</span>
+                    <span className="block text-xl font-bold leading-tight">{major.code}</span>
                     <span className="block text-xs italic leading-snug text-white/85">{name}</span>
                 </span>
             </div>

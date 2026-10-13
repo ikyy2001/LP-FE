@@ -150,7 +150,7 @@ export default function AccountPage() {
                             <span className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
                                 Username
                             </span>
-                            <span className="mt-1 block font-mono font-medium text-slate-900">
+                            <span className="mt-1 block tabular-nums font-medium text-slate-900">
                                 {user?.username ?? "-"}
                             </span>
                         </div>
@@ -158,7 +158,7 @@ export default function AccountPage() {
                             <span className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
                                 Nomor Induk (NIP / NIK)
                             </span>
-                            <span className="mt-1 block font-mono font-medium text-slate-900">
+                            <span className="mt-1 block tabular-nums font-medium text-slate-900">
                                 {user?.nomor_induk ?? "-"}
                             </span>
                         </div>

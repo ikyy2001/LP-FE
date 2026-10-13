@@ -10,9 +10,8 @@ export default function MajorsHome() {
             <div aria-hidden="true" className="pointer-events-none absolute left-0 top-40 hidden md:block w-24 h-56 bg-[radial-gradient(circle,var(--color-brand-mist)_1.5px,transparent_2px)] bg-size-[14px_14px] mask-[linear-gradient(to_bottom,black,transparent)]" />
 
             <div className="relative max-w-6xl mx-auto">
-                <h2 className="font-display text-3xl md:text-4xl font-bold uppercase tracking-wide leading-tight">
-                    {/* Margin negatif supaya teks tetap sejajar kartu, garisnya menjorok ke kiri */}
-                    <SketchFrame className="-ml-4 md:-ml-5">Jurusan</SketchFrame>
+                <h2 className="text-center font-display text-3xl md:text-4xl font-bold uppercase tracking-wide leading-tight">
+                    <SketchFrame>Jurusan</SketchFrame>
                 </h2>
 
                 <MajorsCarousel majors={majors} />
