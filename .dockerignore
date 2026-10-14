@@ -1,0 +1,5 @@
+.git
+node_modules
+dist
+# VITE_API_URL masuk lewat build arg di compose.yml, jadi .env tidak perlu ikut ke image
+.env
