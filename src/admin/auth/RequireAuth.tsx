@@ -15,7 +15,7 @@ export default function RequireAuth() {
         )
     }
 
-    if (status === "guest") return <Navigate to="/admin/login" replace state={{ from: location.pathname + location.search }} />;
+    if (status === "guest") return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
 
     return <Outlet />;
 }

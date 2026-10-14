@@ -1,7 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 /*
+  Font dimuat lewat <link> di index.html. Landing page & PPDB memakai font, URL, dan skala yang sama
+  (salinan aturan ini ada di ppdb/resources/css/app.css), jadi ubah keduanya bersamaan.
+
+  Hanya dua keluarga font: Oswald (cuma tebal 700) dan Plus Jakarta Sans (400, 500, 600, 700 + italic 400).
+  Jangan pakai font-extrabold/font-black (800/900 tidak dimuat) atau font-mono; untuk angka seperti
+  NISN, nomor HP, atau nomor registrasi pakai "tabular-nums" supaya digitnya tetap sejajar.
+
   Skala tipografi (pakai kelas yang sama untuk peran yang sama):
 
   font-display (Oswald) -> selalu "font-bold uppercase tracking-wide"
@@ -55,10 +61,31 @@
   }
 }
 
-/* Semua teks rata kiri-kanan (justify). Kelas seperti text-center tetap bisa menimpa. */
+/* Semua teks rata kiri. Kelas seperti text-center tetap bisa menimpa. */
 @layer base {
   body {
-    text-align: justify;
+    text-align: left;
+  }
+
+  /* Tailwind v4 mengembalikan kursor tombol ke default, jadi semua elemen yang bisa diklik diberi pointer di sini */
+  a[href],
+  button,
+  [role="button"],
+  summary,
+  select,
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="file"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"],
+  label:has(input[type="checkbox"], input[type="radio"], input[type="file"]) {
+    cursor: pointer;
+  }
+
+  :disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
   }
 }
 

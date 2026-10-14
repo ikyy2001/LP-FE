@@ -1,0 +1,17 @@
+services:
+  lpfe:
+    build:
+      context: .
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
+    container_name: lpfe
+    env_file:
+      - .env
+    ports:
+      - "6969:80"
+    networks:
+      - web-penus-network
+
+networks:
+  web-penus-network:
+    external: true

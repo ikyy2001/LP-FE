@@ -83,10 +83,20 @@ export default function ProfileTeacher({ teacher }: { teacher: Teacher }) {
                             </figure>
                         )}
 
+                        {/* Keterangan untuk profil yang isinya masih contoh (lihat contoh() di data/teachers.ts) */}
+                        {teacher.dummy && (
+                            <p role="note" className={`relative ${teacher.quote ? "mt-6" : "mt-12"} bg-brand-darkred/5 px-5 py-4 text-left text-sm leading-relaxed text-brand-ink/70`}>
+                                <SketchBox tone="text-brand-darkred/50" />
+                                <span className="font-semibold text-brand-darkred">Data contoh, bukan data sebenarnya.</span>{" "}
+                                Pesan, foto, dan isi profil ini masih data sementara (dummy) dan akan diperbarui dengan
+                                data asli dari sekolah.
+                            </p>
+                        )}
+
                         {stats.length > 0 && (
                             // gap-6: ujung bingkai coretan kebablasan ±8px, jadi kotak bersebelahan tidak saling tabrak.
                             // text-left: kotak sempit, label yang terbungkus jadi renggang kalau ikut justify dari body
-                            <dl className={`grid grid-cols-3 gap-6 text-left ${teacher.quote ? "mt-10" : "mt-12"}`}>
+                            <dl className={`grid grid-cols-3 gap-6 text-left ${teacher.quote || teacher.dummy ? "mt-10" : "mt-12"}`}>
                                 {stats.map((stat, i) => (
                                     <div key={stat.label} className="relative flex flex-col-reverse justify-end p-3 sm:p-4 md:p-5">
                                         {/* Bingkai coretan penuh, sama seperti kotak "Sekolah dalam Angka" di halaman Tentang */}
