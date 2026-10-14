@@ -1,11 +1,10 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./auth-context";
 import Spinner from "../components/Spinner";
 
-// Halaman admin hanya untuk yang sudah masuk; selain itu diarahkan ke halaman masuk lalu kembali ke sini
+// Halaman admin hanya untuk yang sudah masuk; selain itu diarahkan ke halaman masuk.
 export default function RequireAuth() {
     const { status } = useAuth();
-    const location = useLocation();
 
     if (status === "checking") {
         return(
@@ -15,7 +14,7 @@ export default function RequireAuth() {
         )
     }
 
-    if (status === "guest") return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
+    if (status === "guest") return <Navigate to="/login" replace />;
 
     return <Outlet />;
 }

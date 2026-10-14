@@ -32,6 +32,7 @@ const mainLinks: MenuLink[] = [
     { label: "Daftar Pengumuman Seleksi", href: `${ppdbLink.href}/pengumuman`, external: true },
     { label: "Cek Status Pendaftar (NISN)", href: `${ppdbLink.href}/cek-status`, external: true },
     { label: "Profil Sekolah Resmi", href: "https://smkpluspnb.sch.id" },
+    { label: "Login", href: "/login" },
 ];
 
 // TODO: isi dengan URL aplikasi siswa
