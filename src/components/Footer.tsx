@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Icon, { type IconName } from "./Icon";
 import { ppdbLink, whatsappUrl, type MenuLink } from "../data/navigation";
 import { newsCategories } from "../data/news";
+import { useAuth, type AuthStatus } from "../admin/auth/auth-context";
+import { getToken } from "../lib/api";
 import logoSekolah from "../assets/images/logosmkpenus.png";
 import logoPartner from "../assets/images/logofooter.webp";
 import fotoTalentaVokasi from "../assets/images/TalentaVokasi.png";
@@ -32,8 +34,15 @@ const mainLinks: MenuLink[] = [
     { label: "Daftar Pengumuman Seleksi", href: `${ppdbLink.href}/pengumuman`, external: true },
     { label: "Cek Status Pendaftar (NISN)", href: `${ppdbLink.href}/cek-status`, external: true },
     { label: "Profil Sekolah Resmi", href: "https://smkpluspnb.sch.id" },
-    { label: "Login", href: "/login" },
 ];
+
+// Admin, Kepala Sekolah & TU ke panel admin. Sesi lain (siswa/alumni) diarahkan BKK lewat /bkk/akun ke /bkk/me,
+// yang belum masuk ke halaman login
+function dashboardLink(status: AuthStatus): MenuLink {
+    if (status !== "guest") return { label: "Dashboard", href: "/admin" };
+    if (getToken()) return { label: "Dashboard", href: "/bkk/akun", external: true };
+    return { label: "Dashboard", href: "/login" };
+}
 
 // ?kategori= bisa dibaca halaman /berita nanti untuk langsung memfilter
 const newsLinks: MenuLink[] = newsCategories.map((category) => ({
@@ -42,6 +51,8 @@ const newsLinks: MenuLink[] = newsCategories.map((category) => ({
 }));
 
 export default function Footer() {
+    const { status } = useAuth();
+
     return(
         // "relative z-10" + background supaya menutupi video hero yang sticky (makanya jaraknya pakai padding, bukan margin)
         // text-left menimpa justify dari body untuk seluruh footer
@@ -173,7 +184,7 @@ export default function Footer() {
                     </div>
 
                     <div className="lg:col-span-2">
-                        <FooterMenu title="Menu Utama" links={mainLinks} />
+                        <FooterMenu title="Menu Utama" links={[...mainLinks, dashboardLink(status)]} />
                     </div>
 
                     <div className="lg:col-span-3">
