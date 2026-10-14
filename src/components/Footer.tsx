@@ -35,21 +35,11 @@ const mainLinks: MenuLink[] = [
     { label: "Login", href: "/login" },
 ];
 
-// TODO: isi dengan URL aplikasi siswa
-const studentApps: MenuLink[] = ["DigiYouth", "MyLms", "SiAkad", "Invert"].map((label) => ({ label, href: "#" }));
-
 // ?kategori= bisa dibaca halaman /berita nanti untuk langsung memfilter
 const newsLinks: MenuLink[] = newsCategories.map((category) => ({
     label: category,
     href: `/berita?kategori=${encodeURIComponent(category)}`,
 }));
-
-// TODO: angka masih statis, sambungkan ke penghitung pengunjung
-const visitorStats = [
-    { label: "Pengunjung Hari ini", value: "30" },
-    { label: "Pengunjung Bulan ini", value: "1.596" },
-    { label: "Pengunjung Tahun ini", value: "42.831" },
-];
 
 export default function Footer() {
     return(
@@ -182,25 +172,12 @@ export default function Footer() {
                         </p>
                     </div>
 
-                    <div className="lg:col-span-2 space-y-6">
+                    <div className="lg:col-span-2">
                         <FooterMenu title="Menu Utama" links={mainLinks} />
-                        <FooterMenu title="Aplikasi Siswa" links={studentApps} />
                     </div>
 
-                    <div className="lg:col-span-3 space-y-6">
+                    <div className="lg:col-span-3">
                         <FooterMenu title="Berita Sekolah" links={newsLinks} />
-
-                        <div>
-                            <FooterHeading>Pengunjung Website</FooterHeading>
-                            <dl className="mt-3.5 space-y-1.5 text-xs sm:text-[13px] text-brand-ink/75">
-                                {visitorStats.map((stat) => (
-                                    <div key={stat.label} className="flex gap-1">
-                                        <dt>{stat.label} :</dt>
-                                        <dd className="font-medium text-brand-ink">{stat.value}</dd>
-                                    </div>
-                                ))}
-                            </dl>
-                        </div>
                     </div>
 
                     <div className="lg:col-span-3">
