@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from "react";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../../admin/auth/auth-context";
 import AdminIcon from "../../admin/components/AdminIcon";
 import Spinner from "../../admin/components/Spinner";
@@ -20,7 +20,6 @@ const features = [
 export default function LoginPage() {
     useDocumentTitle("Masuk Administrator");
     const { status, login } = useAuth();
-    const location = useLocation();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -29,12 +28,9 @@ export default function LoginPage() {
     const [errors, setErrors] = useState<Record<string, string[]>>({});
     const [message, setMessage] = useState<string | null>(null);
 
-    // Kembali ke halaman yang sebelumnya ingin dibuka sebelum diarahkan ke /login
-    const from = (location.state as { from?: string } | null)?.from ?? "/admin";
-
-    // Jika sudah terotentikasi, alihkan langsung ke panel admin
+    // Setelah masuk (atau jika sesi sudah aktif), arahkan ke landing page utama.
     if (status === "authenticated") {
-        return <Navigate to={from} replace />;
+        return <Navigate to="/" replace />;
     }
 
     const handleSubmit = async (e: FormEvent) => {
