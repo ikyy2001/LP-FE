@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Icon, { type IconName } from "./Icon";
 import { ppdbLink, whatsappUrl, type MenuLink } from "../data/navigation";
 import { newsCategories } from "../data/news";
+import { useAuth, type AuthStatus } from "../admin/auth/auth-context";
+import { getToken } from "../lib/api";
 import logoSekolah from "../assets/images/logosmkpenus.png";
 import logoPartner from "../assets/images/logofooter.webp";
 import fotoTalentaVokasi from "../assets/images/TalentaVokasi.png";
@@ -32,11 +34,15 @@ const mainLinks: MenuLink[] = [
     { label: "Daftar Pengumuman Seleksi", href: `${ppdbLink.href}/pengumuman`, external: true },
     { label: "Cek Status Pendaftar (NISN)", href: `${ppdbLink.href}/cek-status`, external: true },
     { label: "Profil Sekolah Resmi", href: "https://smkpluspnb.sch.id" },
-    { label: "Login", href: "/login" },
 ];
 
-// TODO: isi dengan URL aplikasi siswa
-const studentApps: MenuLink[] = ["DigiYouth", "MyLms", "SiAkad", "Invert"].map((label) => ({ label, href: "#" }));
+// Admin, Kepala Sekolah & TU ke panel admin. Sesi lain (siswa/alumni) diarahkan BKK lewat /bkk/akun ke /bkk/me,
+// yang belum masuk ke halaman login
+function dashboardLink(status: AuthStatus): MenuLink {
+    if (status !== "guest") return { label: "Dashboard", href: "/admin" };
+    if (getToken()) return { label: "Dashboard", href: "/bkk/akun", external: true };
+    return { label: "Dashboard", href: "/login" };
+}
 
 // ?kategori= bisa dibaca halaman /berita nanti untuk langsung memfilter
 const newsLinks: MenuLink[] = newsCategories.map((category) => ({
@@ -44,14 +50,9 @@ const newsLinks: MenuLink[] = newsCategories.map((category) => ({
     href: `/berita?kategori=${encodeURIComponent(category)}`,
 }));
 
-// TODO: angka masih statis, sambungkan ke penghitung pengunjung
-const visitorStats = [
-    { label: "Pengunjung Hari ini", value: "30" },
-    { label: "Pengunjung Bulan ini", value: "1.596" },
-    { label: "Pengunjung Tahun ini", value: "42.831" },
-];
-
 export default function Footer() {
+    const { status } = useAuth();
+
     return(
         // "relative z-10" + background supaya menutupi video hero yang sticky (makanya jaraknya pakai padding, bukan margin)
         // text-left menimpa justify dari body untuk seluruh footer
@@ -182,25 +183,12 @@ export default function Footer() {
                         </p>
                     </div>
 
-                    <div className="lg:col-span-2 space-y-6">
-                        <FooterMenu title="Menu Utama" links={mainLinks} />
-                        <FooterMenu title="Aplikasi Siswa" links={studentApps} />
+                    <div className="lg:col-span-2">
+                        <FooterMenu title="Menu Utama" links={[...mainLinks, dashboardLink(status)]} />
                     </div>
 
-                    <div className="lg:col-span-3 space-y-6">
+                    <div className="lg:col-span-3">
                         <FooterMenu title="Berita Sekolah" links={newsLinks} />
-
-                        <div>
-                            <FooterHeading>Pengunjung Website</FooterHeading>
-                            <dl className="mt-3.5 space-y-1.5 text-xs sm:text-[13px] text-brand-ink/75">
-                                {visitorStats.map((stat) => (
-                                    <div key={stat.label} className="flex gap-1">
-                                        <dt>{stat.label} :</dt>
-                                        <dd className="font-medium text-brand-ink">{stat.value}</dd>
-                                    </div>
-                                ))}
-                            </dl>
-                        </div>
                     </div>
 
                     <div className="lg:col-span-3">

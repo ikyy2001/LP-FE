@@ -38,8 +38,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
                 const userData = response.data;
                 const role = (userData.role || "").toUpperCase();
 
+                // Sesi non-admin (mis. siswa yang masuk portal BKK) tidak boleh ke panel admin, tapi tokennya
+                // dibiarkan supaya link "Dashboard" di footer masih bisa mengarahkannya ke /bkk/me
                 if (!ALLOWED_ADMIN_ROLES.includes(role)) {
-                    setToken(null);
                     setUser(null);
                     setStatus("guest");
                     return;
