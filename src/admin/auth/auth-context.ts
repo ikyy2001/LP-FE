@@ -6,7 +6,7 @@ export type AdminUser = {
     nama_lengkap: string;
     name?: string;
     nomor_induk?: string;
-    role: "ADMIN" | "KEPALA_SEKOLAH" | "TU" | "GURU" | "SISWA" | "ORANG_TUA" | "BENDAHARA" | "BK" | string;
+    role: "ADMIN" | "KEPALA_SEKOLAH" | "TU" | "DEVELOPER" | "GURU" | "SISWA" | "ORANG_TUA" | "BENDAHARA" | "BK" | string;
     email: string | null;
     no_hp?: string | null;
     jenis_kelamin?: "LAKI_LAKI" | "PEREMPUAN" | null;
@@ -17,15 +17,24 @@ export type AdminUser = {
     updatedAt?: string;
 };
 
+export const ALLOWED_ADMIN_ROLES = ["ADMIN", "KEPALA_SEKOLAH", "TU", "DEVELOPER"] as const;
+export type AdminRole = typeof ALLOWED_ADMIN_ROLES[number];
+
+export function isAdminRole(role?: string | null): boolean {
+    if (!role) return false;
+    return (ALLOWED_ADMIN_ROLES as readonly string[]).includes(role.toUpperCase());
+}
+
 // checking = token tersimpan sedang diperiksa ke server saat panel admin pertama dibuka
 export type AuthStatus = "checking" | "authenticated" | "guest";
 
 export type AuthContextValue = {
     user: AdminUser | null;
     status: AuthStatus;
-    login: (username: string, password: string) => Promise<void>;
+    login: (username: string, password: string) => Promise<AdminUser>;
     logout: () => Promise<void>;
     setUser: (user: AdminUser) => void;
+    verifySession: () => Promise<AdminUser | null>;
 };
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

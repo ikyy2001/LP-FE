@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type ReactNode } from "react";
-import { Link, Navigate } from "react-router-dom";
-import { useAuth } from "../../admin/auth/auth-context";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useAuth, isAdminRole } from "../../admin/auth/auth-context";
 import AdminIcon from "../../admin/components/AdminIcon";
 import Spinner from "../../admin/components/Spinner";
 import { useDocumentTitle } from "../../admin/lib/format";
@@ -19,7 +19,8 @@ const features = [
 
 export default function LoginPage() {
     useDocumentTitle("Masuk Administrator");
-    const { status, login } = useAuth();
+    const { status, user, login } = useAuth();
+    const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -28,9 +29,23 @@ export default function LoginPage() {
     const [errors, setErrors] = useState<Record<string, string[]>>({});
     const [message, setMessage] = useState<string | null>(null);
 
-    // Setelah masuk (atau jika sesi sudah aktif), arahkan ke landing page utama.
-    if (status === "authenticated") {
-        return <Navigate to="/" replace />;
+    // Tampilkan spinner jika status sesi sedang diperiksa ke server
+    if (status === "checking") {
+        return (
+            <div className="min-h-svh flex items-center justify-center bg-brand-softmist/50">
+                <Spinner label="Memeriksa sesi..." className="w-8 h-8 text-brand-darkred" />
+            </div>
+        );
+    }
+
+    // Jika sesi sudah aktif sebelumnya:
+    // Akun admin diarahkan ke /admin, akun non-admin (misal: SISWA) dialihkan ke portal /bkk/me
+    if (status === "authenticated" && user && isAdminRole(user.role)) {
+        return <Navigate to="/admin" replace />;
+    }
+    if (user && !isAdminRole(user.role)) {
+        window.location.replace("/bkk/me");
+        return null;
     }
 
     const handleSubmit = async (e: FormEvent) => {
@@ -41,8 +56,14 @@ export default function LoginPage() {
 
         try {
             // Melakukan request login POST ke /api/user/login dengan JSON Payload { username, password }
-            // access_token disimpan sebagai Cookie secara otomatis
-            await login(username.trim(), password);
+            // access_token disimpan sebagai Cookie & localStorage secara otomatis
+            const loggedInUser = await login(username.trim(), password);
+
+            if (isAdminRole(loggedInUser.role)) {
+                navigate("/admin", { replace: true });
+            } else {
+                window.location.replace("/bkk/me");
+            }
         } catch (error) {
             if (error instanceof ApiError && error.status === 422) {
                 setErrors(error.errors);

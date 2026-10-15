@@ -67,16 +67,30 @@ export function removeAuthCookie(): void {
     document.cookie = "access_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
 }
 
-// Token panel admin disimpan di localStorage dan cookie supaya tetap masuk setelah halaman dimuat ulang.
-// Sinkronisasi dengan cookie access_token memastikan kecocokan dengan VERIFY_MIDDLEWARE.md
+// Token otentikasi menggunakan cookie access_token sebagai Single Source of Truth
+// (sinkron dengan middleware Laravel BKK & Microservice User API), dan di-mirror ke localStorage.
 export function getToken(): string | null {
-    try {
-        const stored = localStorage.getItem(TOKEN_KEY);
-        if (stored) return stored;
-        return getAuthCookie();
-    } catch {
-        return getAuthCookie();
+    const cookieToken = getAuthCookie();
+    if (!cookieToken) {
+        // Jika cookie sudah dihapus atau kedaluwarsa, bersihkan localStorage agar tidak desinkron
+        try {
+            localStorage.removeItem(TOKEN_KEY);
+        } catch {
+            // Abaikan kesalahan akses localStorage
+        }
+        return null;
     }
+
+    // Pastikan nilai di localStorage tetap sinkron dengan cookie
+    try {
+        if (localStorage.getItem(TOKEN_KEY) !== cookieToken) {
+            localStorage.setItem(TOKEN_KEY, cookieToken);
+        }
+    } catch {
+        // Abaikan kesalahan akses localStorage
+    }
+
+    return cookieToken;
 }
 
 export function setToken(token: string | null, expiresIn?: string | number) {
@@ -165,7 +179,7 @@ export async function apiRequest<T>(path: string, { method = "GET", body, signal
     }
 
     if (!response.ok) {
-        if (response.status === 401 && token && !path.includes("/login")) {
+        if (response.status === 401 && !path.includes("/login")) {
             unauthorizedListeners.forEach((listener) => listener());
         }
 

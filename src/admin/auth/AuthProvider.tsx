@@ -1,5 +1,5 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { AuthContext, type AdminUser, type AuthStatus } from "./auth-context";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { AuthContext, isAdminRole, type AdminUser, type AuthStatus } from "./auth-context";
 import { ApiError, apiRequest, getToken, onUnauthorized, setToken } from "../../lib/api";
 import { invalidateApiCache } from "../../lib/useApi";
 
@@ -17,37 +17,88 @@ type VerifyApiResponse = {
     data: AdminUser;
 };
 
-const ALLOWED_ADMIN_ROLES = ["ADMIN", "KEPALA_SEKOLAH", "TU"];
+async function fetchVerifyUser(token: string): Promise<AdminUser> {
+    const response = await apiRequest<VerifyApiResponse>("/user/verify", {
+        method: "POST",
+        body: { access_token: token },
+    });
+    return response.data;
+}
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<AdminUser | null>(null);
     const [status, setStatus] = useState<AuthStatus>(() => (getToken() ? "checking" : "guest"));
 
-    // Periksa token tersimpan saat panel admin dibuka
+    // Fungsi verifikasi sesi ke microservice userapi (/api/user/verify)
+    const verifySession = useCallback(async (): Promise<AdminUser | null> => {
+        const token = getToken();
+        if (!token) {
+            return null;
+        }
+
+        try {
+            const userData = await fetchVerifyUser(token);
+            if (!userData || userData.status_aktif === false) {
+                setToken(null);
+                setUser(null);
+                setStatus("guest");
+                return null;
+            }
+
+            const formattedUser: AdminUser = {
+                ...userData,
+                name: userData.nama_lengkap || userData.username,
+            };
+
+            const role = (userData.role || "").toUpperCase();
+
+            // Sesi non-admin (misal: siswa/alumni yang masuk portal BKK):
+            // Token TIDAK dihapus agar sesi portal BKK tetap aktif, namun status admin menjadi "guest"
+            // dan user tetap diset agar middleware dapat memeriksa role-nya untuk redirect ke /bkk/me
+            setUser(formattedUser);
+            if (!isAdminRole(role)) {
+                setStatus("guest");
+            } else {
+                setStatus("authenticated");
+            }
+
+            return formattedUser;
+        } catch {
+            setToken(null);
+            setUser(null);
+            setStatus("guest");
+            return null;
+        }
+    }, []);
+
+    // Periksa token tersimpan saat aplikasi dibuka
     useEffect(() => {
         const token = getToken();
         if (!token) return;
 
         let cancelled = false;
-        apiRequest<VerifyApiResponse>("/user/verify", {
-            method: "POST",
-            body: { access_token: token },
-        }).then(
-            (response) => {
+        fetchVerifyUser(token).then(
+            (userData) => {
                 if (cancelled) return;
-                const userData = response.data;
-                const role = (userData.role || "").toUpperCase();
-
-                // Sesi non-admin (mis. siswa yang masuk portal BKK) tidak boleh ke panel admin, tapi tokennya
-                // dibiarkan supaya link "Dashboard" di footer masih bisa mengarahkannya ke /bkk/me
-                if (!ALLOWED_ADMIN_ROLES.includes(role)) {
+                if (!userData || userData.status_aktif === false) {
+                    setToken(null);
                     setUser(null);
                     setStatus("guest");
                     return;
                 }
 
-                setUser({ ...userData, name: userData.nama_lengkap || userData.username });
-                setStatus("authenticated");
+                const formattedUser: AdminUser = {
+                    ...userData,
+                    name: userData.nama_lengkap || userData.username,
+                };
+
+                const role = (userData.role || "").toUpperCase();
+                setUser(formattedUser);
+                if (!isAdminRole(role)) {
+                    setStatus("guest");
+                } else {
+                    setStatus("authenticated");
+                }
             },
             () => {
                 if (cancelled) return;
@@ -69,7 +120,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         invalidateApiCache("/admin");
     }), []);
 
-    const login = async (username: string, password: string) => {
+    const login = async (username: string, password: string): Promise<AdminUser> => {
         // 1. Panggil microservice login (/api/user/login)
         const loginRes = await apiRequest<LoginApiResponse>("/user/login", {
             method: "POST",
@@ -79,18 +130,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         const token = loginRes.access_token;
         setToken(token, loginRes.expires_in);
 
-        // Ekstraksi payload JWT untuk data sesi
-        let jwtUser: Partial<AdminUser> | null = null;
-        try {
-            const parts = token.split(".");
-            if (parts.length === 3) {
-                const payloadJson = atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"));
-                jwtUser = JSON.parse(payloadJson);
-            }
-        } catch {
-            // Abaikan kesalahan pembacaan payload JWT
-        }
-
         try {
             // 2. Verifikasi token dan peroleh data profil pengguna
             const verifyRes = await apiRequest<VerifyApiResponse>("/user/verify", {
@@ -99,19 +138,31 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
             });
 
             const userData = verifyRes.data;
-            const role = (userData.role || "").toUpperCase();
 
-            // 3. Validasi hak akses role (ADMIN, KEPALA_SEKOLAH, TU)
-            if (!ALLOWED_ADMIN_ROLES.includes(role)) {
+            // Validasi akun aktif
+            if (userData.status_aktif === false) {
                 setToken(null);
-                throw new ApiError(
-                    403,
-                    `Akses ditolak: role ${userData.role} tidak memiliki izin untuk mengakses panel administrator.`,
-                );
+                setUser(null);
+                setStatus("guest");
+                throw new ApiError(403, "Akun pengguna sedang dinonaktifkan.");
             }
 
-            setUser({ ...userData, name: userData.nama_lengkap || userData.username });
-            setStatus("authenticated");
+            const formattedUser: AdminUser = {
+                ...userData,
+                name: userData.nama_lengkap || userData.username,
+            };
+
+            const role = (userData.role || "").toUpperCase();
+
+            setUser(formattedUser);
+            if (isAdminRole(role)) {
+                setStatus("authenticated");
+            } else {
+                // Non-admin role: token tersimpan, status admin guest
+                setStatus("guest");
+            }
+
+            return formattedUser;
         } catch (error) {
             if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
                 setToken(null);
@@ -120,29 +171,36 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
                 throw error;
             }
 
-            // Fallback: jika verify tidak terhubung namun JWT memiliki role admin
+            // Fallback: jika verify tidak terhubung namun JWT memiliki role
+            let jwtUser: Partial<AdminUser> | null = null;
+            try {
+                const parts = token.split(".");
+                if (parts.length === 3) {
+                    const payloadJson = atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"));
+                    jwtUser = JSON.parse(payloadJson);
+                }
+            } catch {
+                // Abaikan kesalahan pembacaan payload JWT
+            }
+
             if (jwtUser && jwtUser.role) {
                 const role = String(jwtUser.role).toUpperCase();
-                if (!ALLOWED_ADMIN_ROLES.includes(role)) {
-                    setToken(null);
-                    setUser(null);
-                    setStatus("guest");
-                    throw new ApiError(
-                        403,
-                        `Akses ditolak: role ${jwtUser.role} tidak memiliki izin untuk mengakses panel administrator.`,
-                    );
-                }
-
-                setUser({
+                const fallbackUser: AdminUser = {
                     id: jwtUser.id ?? "admin",
                     username: jwtUser.username ?? username,
                     nama_lengkap: (jwtUser as { nama_lengkap?: string }).nama_lengkap || jwtUser.username || username,
                     name: (jwtUser as { nama_lengkap?: string }).nama_lengkap || jwtUser.username || username,
-                    role: role,
+                    role,
                     email: jwtUser.email ?? null,
-                });
-                setStatus("authenticated");
-                return;
+                    status_aktif: true,
+                };
+                setUser(fallbackUser);
+                if (isAdminRole(role)) {
+                    setStatus("authenticated");
+                } else {
+                    setStatus("guest");
+                }
+                return fallbackUser;
             }
 
             setToken(null);
@@ -160,7 +218,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, status, login, logout, setUser }}>
+        <AuthContext.Provider value={{ user, status, login, logout, setUser, verifySession }}>
             {children}
         </AuthContext.Provider>
     );
