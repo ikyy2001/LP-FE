@@ -6,9 +6,9 @@ import { newsCategories } from "../data/news";
 import { useAuth } from "../admin/auth/auth-context";
 import { dashboardLink } from "../admin/auth/dashboard-link";
 import { loadAdminApp } from "../admin/loadAdminApp";
-import logoSekolah from "../assets/images/logosmkpenus.png";
+import logoSekolah from "../assets/images/logosmkpenus.webp";
 import logoPartner from "../assets/images/logofooter.webp";
-import fotoTalentaVokasi from "../assets/images/TalentaVokasi.png";
+import fotoTalentaVokasi from "../assets/images/TalentaVokasi.webp";
 import { SketchArrow, SketchSparks } from "./SketchFrame";
 
 const brochureUrl = "https://images.lekar.co.id/file/pelita/infografis_pelita_nusantara.pdf";

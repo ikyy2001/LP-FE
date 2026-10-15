@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import AdminIcon, { type AdminIconName } from "./AdminIcon";
 import { useAuth } from "../auth/auth-context";
-import logoSekolah from "../../assets/images/logosmkpenus.png";
+import logoSekolah from "../../assets/images/logosmkpenus.webp";
 
 type NavItem = {
     to: string;

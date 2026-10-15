@@ -1,4 +1,4 @@
-import logoSekolah from "../../assets/images/logosmkpenus.png";
+import logoSekolah from "../../assets/images/logosmkpenus.webp";
 
 // Layar peralihan dari situs ke panel admin, tampil selama kode panel diunduh dan sesi diperiksa.
 // Latar & logo sama dengan AdminLayout supaya pergantiannya mulus. Isinya baru muncul setelah jeda singkat,
