@@ -13,9 +13,11 @@ import Activities from "../pages/activities/Activities";
 import ActivityDetail from "../pages/activities/ActivityDetail";
 import LoginPage from "../pages/login/LoginPage";
 import NotFound from "../pages/notfound/NotFound";
+import AdminLoadingScreen from "../admin/components/AdminLoadingScreen";
+import { loadAdminApp } from "../admin/loadAdminApp";
 
 // Panel admin dimuat terpisah, jadi pengunjung situs tidak ikut mengunduh kodenya
-const AdminApp = lazy(() => import("../admin/AdminApp"));
+const AdminApp = lazy(loadAdminApp);
 
 export default function AppRoutes() {
   return (
@@ -35,7 +37,7 @@ export default function AppRoutes() {
       <Route
         path="/admin/*"
         element={
-          <Suspense fallback={<div className="min-h-svh bg-brand-softmist/50" />}>
+          <Suspense fallback={<AdminLoadingScreen />}>
             <AdminApp />
           </Suspense>
         }

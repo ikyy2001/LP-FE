@@ -145,7 +145,7 @@ export default function AdminLayout() {
     }
 
     return (
-        <div className="min-h-screen flex flex-row bg-[#F8F9FA] text-[#0F172A] font-sans antialiased selection:bg-[#8B1D24] selection:text-white">
+        <div className="min-h-screen flex flex-row bg-[#F8F9FA] text-[#0F172A] font-sans antialiased selection:bg-[#8B1D24] selection:text-white animate-fade-in">
             {/* MOBILE SLIDE-OVER DRAWER */}
             {menuOpen && (
                 <div className="fixed inset-0 z-50 lg:hidden flex" role="dialog" aria-modal="true" aria-label="Menu admin">
