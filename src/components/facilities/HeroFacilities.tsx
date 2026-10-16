@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import fotoGedung from "../../assets/images/fotogedung.jpg";
 import { SketchArrow, SketchBox, SketchUnderline } from "../SketchFrame";
 import { facts } from "../../data/profile";
-import { useFacilities } from "../../lib/content";
 
 const chevron = (
     <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -11,14 +10,8 @@ const chevron = (
 );
 
 export default function HeroFacilities() {
-    const { facilities } = useFacilities();
-
-    // Angka resmi Dapodik dari profile.ts, ditambah jumlah ruang praktik yang dihitung dari data fasilitas
-    // ("–" selama data fasilitas dimuat)
-    const stats = [
-        ...facts.filter((fact) => ["Ruang kelas", "Laboratorium", "Luas lahan"].includes(fact.label)),
-        { value: facilities ? String(facilities.filter((f) => f.category === "praktik").length) : "–", label: "Ruang praktik jurusan" },
-    ];
+    // Angka resmi Dapodik dari profile.ts
+    const stats = facts.filter((fact) => ["Ruang kelas", "Laboratorium", "Luas lahan", "Perpustakaan"].includes(fact.label));
 
     const scrollToSection = (id: string) => {
         const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -27,7 +20,7 @@ export default function HeroFacilities() {
 
     return(
         <section className="relative overflow-hidden bg-brand-ink text-white px-6 pt-36 pb-28 md:pt-40 md:pb-32">
-            <img src={fotoGedung} alt="" className="absolute inset-0 size-full object-cover" />
+            <img src={fotoGedung} alt="" className="absolute inset-0 size-full object-cover" fetchPriority="high" />
             {/* Gelap di sisi teks supaya tetap terbaca (di HP teks & statistik menumpuk, jadi gelap merata),
                 lalu rona merah di kanan atas seperti latar sebelumnya */}
             <div aria-hidden="true" className="absolute inset-0 bg-brand-ink/80 lg:bg-transparent lg:bg-linear-to-r lg:from-brand-ink/95 lg:via-brand-ink/80 lg:to-brand-ink/50" />

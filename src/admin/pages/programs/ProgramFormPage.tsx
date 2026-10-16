@@ -136,7 +136,7 @@ function ProgramForm({ program }: { program: ProgramDetail | null }) {
                         </div>
                     </Field>
 
-                    <Field label="Ringkasan" htmlFor="description" error={err("description")} hint="Tampil di carousel beranda dan sebagai paragraf pembuka halaman detail.">
+                    <Field label="Ringkasan" htmlFor="description" error={err("description")} hint="Tampil di kartu beranda dan sebagai paragraf pembuka halaman detail.">
                         <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={1000} aria-invalid={err("description") ? true : undefined} className={`${inputClass} field-sizing-content min-h-24 leading-relaxed`} />
                     </Field>
 

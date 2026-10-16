@@ -1,7 +1,10 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { navItems, ppdbLink, type MenuGroup, type MenuLink } from "../data/navigation";
-import logoSekolah from "../assets/images/logosmkpenus.png";
+import { useAuth } from "../admin/auth/auth-context";
+import { dashboardLink, hasSession } from "../admin/auth/dashboard-link";
+import { loadAdminApp } from "../admin/loadAdminApp";
+import logoPenus from "/logo-penus.png";
 import { SketchArrow, SketchUnderline } from "./SketchFrame";
 
 type IsActive = (link: MenuLink) => boolean;
@@ -12,6 +15,13 @@ export default function Navbar() {
     const dialogRef = useRef<HTMLDialogElement>(null);
     // Di paling atas halaman navbar berupa bar penuh, setelah discroll berubah jadi pill mengambang
     const [atTop, setAtTop] = useState(() => window.scrollY < 24);
+    // Tombol Dasbor hanya untuk yang sudah masuk; pengunjung biasa tetap lewat link "Dashboard" di footer
+    const { status } = useAuth();
+    const dashboard = hasSession(status) ? dashboardLink(status) : null;
+    // Kode panel admin mulai diunduh saat tombolnya disorot/disentuh, supaya dasbor langsung terbuka saat diklik
+    const preloadDashboard = () => {
+        if (dashboard?.href === "/admin") void loadAdminApp();
+    };
 
     useEffect(() => {
         const onScroll = () => setAtTop(window.scrollY < 24);
@@ -55,25 +65,17 @@ export default function Navbar() {
                 className={`pointer-events-auto w-full border flex items-center justify-between gap-4 transition-all duration-300 motion-reduce:transition-none ${
                     atTop
                         ? "max-w-full rounded-none bg-white border-transparent border-b-brand-ink/10 px-[max(1.5rem,calc((100%-72rem)/2))] py-3 md:py-4"
-                        : "max-w-5xl rounded-[2.5rem] bg-brand-softmist border-brand-ink/10 shadow-softpill px-6 md:px-8 py-3 md:py-3.5"
+                        : "max-w-6xl rounded-[2.5rem] bg-brand-softmist border-brand-ink/10 shadow-softpill px-6 md:px-8 py-3 md:py-3.5"
                 }`}
                 aria-label="Navigasi Utama"
             >
-                <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
+                <Link to="/" className="flex items-center group">
                     <img
-                        src={logoSekolah}
-                        alt="Logo SMK Pelita Nusantara"
-                        className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow-xs group-hover:scale-105 transition-transform shrink-0"
+                        src={logoPenus}
+                        alt="SMK Plus Pelita Nusantara"
+                        className="h-10 sm:h-11 md:h-12 w-auto object-contain drop-shadow-xs group-hover:scale-105 transition-transform shrink-0"
                         loading="eager"
                     />
-                    <div className="flex flex-col">
-                        <span className="font-display text-base font-bold uppercase tracking-wide text-brand-ink leading-tight group-hover:text-brand-darkred transition-colors">
-                            SMK PLUS PELITA NUSANTARA
-                        </span>
-                        <span className="text-[10px] uppercase font-semibold tracking-wider text-brand-darkred mt-0.5">
-                            We Are Different
-                        </span>
-                    </div>
                 </Link>
 
                 <ul className="hidden lg:flex items-center gap-1 xl:gap-1.5">
@@ -101,6 +103,20 @@ export default function Navbar() {
                 </ul>
 
                 <div className="flex items-center gap-2">
+                    {dashboard && (
+                        <Link
+                            to={dashboard.href}
+                            reloadDocument={dashboard.external}
+                            onMouseEnter={preloadDashboard}
+                            onFocus={preloadDashboard}
+                            onTouchStart={preloadDashboard}
+                            className="group hidden sm:inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-brand-darkred/25 bg-white px-4 py-2 text-sm font-semibold text-brand-darkred transition-colors hover:border-brand-darkred hover:bg-brand-darkred hover:text-white"
+                        >
+                            <DashboardIcon className="w-4 h-4" />
+                            Dasbor
+                        </Link>
+                    )}
+
                     {/* Tombol utama: satu-satunya menu yang diberi warna penuh */}
                     <Link
                         to={ppdbLink.href}
@@ -130,16 +146,14 @@ export default function Navbar() {
                 ref={dialogRef}
                 aria-label="Menu navigasi"
                 onClose={closeMenu}
+                // Lenis tidak ikut memproses scroll di dalam menu, jadi halaman di belakangnya tetap diam
+                data-lenis-prevent
                 className="pointer-events-auto size-full max-w-none max-h-none flex-col overscroll-contain bg-brand-darkred/95 backdrop-blur-lg p-6 sm:p-8 text-brand-mist open:flex"
             >
                 <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <img src={logoSekolah} alt="" className="w-9 h-9 object-contain drop-shadow shrink-0" />
-                        <div className="flex flex-col">
-                            <span className="font-display text-base font-bold uppercase tracking-wide text-white leading-tight">SMK PLUS PELITA NUSANTARA</span>
-                            <span className="text-[10px] uppercase font-semibold tracking-wider text-brand-mist/70 mt-0.5">We Are Different</span>
-                        </div>
-                    </div>
+                    <Link to="/" onClick={closeMenu} className="flex items-center">
+                        <img src={logoPenus} alt="SMK Plus Pelita Nusantara" className="h-10 w-auto object-contain drop-shadow shrink-0" />
+                    </Link>
                     <button
                         type="button"
                         onClick={closeMenu}
@@ -179,7 +193,19 @@ export default function Navbar() {
                     )}
                 </ul>
 
-                <div className="mt-auto border-t border-white/15 pt-6">
+                <div className="mt-auto flex flex-col gap-3 border-t border-white/15 pt-6">
+                    {dashboard && (
+                        <Link
+                            to={dashboard.href}
+                            reloadDocument={dashboard.external}
+                            onClick={closeMenu}
+                            onTouchStart={preloadDashboard}
+                            className="flex items-center justify-center gap-2 rounded-full border border-white/40 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                        >
+                            <DashboardIcon className="w-4 h-4" />
+                            Buka Dasbor
+                        </Link>
+                    )}
                     <Link
                         to={ppdbLink.href}
                         reloadDocument
@@ -348,6 +374,17 @@ function MobileGroup({ group, isActive, onNavigate }: { group: MenuGroup; isActi
                 </div>
             </div>
         </li>
+    )
+}
+
+function DashboardIcon({ className }: { className?: string }) {
+    return(
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="9" rx="1.5" />
+            <rect x="14" y="3" width="7" height="5" rx="1.5" />
+            <rect x="14" y="12" width="7" height="9" rx="1.5" />
+            <rect x="3" y="16" width="7" height="5" rx="1.5" />
+        </svg>
     )
 }
 

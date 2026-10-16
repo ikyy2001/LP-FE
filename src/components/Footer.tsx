@@ -3,9 +3,12 @@ import { Link } from "react-router-dom";
 import Icon, { type IconName } from "./Icon";
 import { ppdbLink, whatsappUrl, type MenuLink } from "../data/navigation";
 import { newsCategories } from "../data/news";
-import logoSekolah from "../assets/images/logosmkpenus.png";
+import { useAuth } from "../admin/auth/auth-context";
+import { dashboardLink } from "../admin/auth/dashboard-link";
+import { loadAdminApp } from "../admin/loadAdminApp";
+import logoSekolah from "../assets/images/logosmkpenus.webp";
 import logoPartner from "../assets/images/logofooter.webp";
-import fotoTalentaVokasi from "../assets/images/TalentaVokasi.png";
+import fotoTalentaVokasi from "../assets/images/TalentaVokasi.webp";
 import { SketchArrow, SketchSparks } from "./SketchFrame";
 
 const brochureUrl = "https://images.lekar.co.id/file/pelita/infografis_pelita_nusantara.pdf";
@@ -34,23 +37,15 @@ const mainLinks: MenuLink[] = [
     { label: "Profil Sekolah Resmi", href: "https://smkpluspnb.sch.id" },
 ];
 
-// TODO: isi dengan URL aplikasi siswa
-const studentApps: MenuLink[] = ["DigiYouth", "MyLms", "SiAkad", "Invert"].map((label) => ({ label, href: "#" }));
-
 // ?kategori= bisa dibaca halaman /berita nanti untuk langsung memfilter
 const newsLinks: MenuLink[] = newsCategories.map((category) => ({
     label: category,
     href: `/berita?kategori=${encodeURIComponent(category)}`,
 }));
 
-// TODO: angka masih statis, sambungkan ke penghitung pengunjung
-const visitorStats = [
-    { label: "Pengunjung Hari ini", value: "30" },
-    { label: "Pengunjung Bulan ini", value: "1.596" },
-    { label: "Pengunjung Tahun ini", value: "42.831" },
-];
-
 export default function Footer() {
+    const { status } = useAuth();
+
     return(
         // "relative z-10" + background supaya menutupi video hero yang sticky (makanya jaraknya pakai padding, bukan margin)
         // text-left menimpa justify dari body untuk seluruh footer
@@ -181,25 +176,12 @@ export default function Footer() {
                         </p>
                     </div>
 
-                    <div className="lg:col-span-2 space-y-6">
-                        <FooterMenu title="Menu Utama" links={mainLinks} />
-                        <FooterMenu title="Aplikasi Siswa" links={studentApps} />
+                    <div className="lg:col-span-2">
+                        <FooterMenu title="Menu Utama" links={[...mainLinks, dashboardLink(status)]} />
                     </div>
 
-                    <div className="lg:col-span-3 space-y-6">
+                    <div className="lg:col-span-3">
                         <FooterMenu title="Berita Sekolah" links={newsLinks} />
-
-                        <div>
-                            <FooterHeading>Pengunjung Website</FooterHeading>
-                            <dl className="mt-3.5 space-y-1.5 text-xs sm:text-[13px] text-brand-ink/75">
-                                {visitorStats.map((stat) => (
-                                    <div key={stat.label} className="flex gap-1">
-                                        <dt>{stat.label} :</dt>
-                                        <dd className="font-medium text-brand-ink">{stat.value}</dd>
-                                    </div>
-                                ))}
-                            </dl>
-                        </div>
                     </div>
 
                     <div className="lg:col-span-3">
@@ -276,8 +258,11 @@ function FooterLink({ link }: { link: MenuLink }) {
         )
     }
 
+    // Kode panel admin mulai diunduh saat link-nya disorot, supaya dasbor langsung terbuka saat diklik
+    const preload = link.href === "/admin" ? () => void loadAdminApp() : undefined;
+
     return(
-        <Link to={link.href} reloadDocument={link.external} className={className}>
+        <Link to={link.href} reloadDocument={link.external} onMouseEnter={preload} onFocus={preload} className={className}>
             {link.label}
         </Link>
     )

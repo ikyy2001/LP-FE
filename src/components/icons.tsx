@@ -181,6 +181,22 @@ export const icons = {
             <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2a6.5 6.5 0 0 1 3.5 5.8" />
         </>
     ),
+    // Ikon kegiatan siswa (Talent Day & ekskul)
+    cooking: <path d="M4 11h16v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3zM2 11h20M9.5 7.5c0-1.2 1-1.6 1-2.8M14.5 7.5c0-1.2 1-1.6 1-2.8" />,
+    gamepad: (
+        <>
+            <path d="M7 7h10a5 5 0 0 1 4.8 6.4l-.7 2.4a2.4 2.4 0 0 1-4 1L15.5 15h-7L6.9 16.8a2.4 2.4 0 0 1-4-1l-.7-2.4A5 5 0 0 1 7 7z" />
+            <path d="M8 10v3M6.5 11.5h3M15 11h.01M17.5 12.5h.01" />
+        </>
+    ),
+    ball: (
+        <>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3 12h18M12 3v18M5.6 5.6a9 9 0 0 1 0 12.8M18.4 5.6a9 9 0 0 0 0 12.8" />
+        </>
+    ),
+    trophy: <path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M9 17h6v4H9z" />,
+    tent: <path d="M12 4 3 20h18zM12 13l-3 7M12 13l3 7M2 20h20" />,
 } satisfies Record<string, ReactNode>;
 
 export type IconName = keyof typeof icons;

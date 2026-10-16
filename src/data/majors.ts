@@ -1,10 +1,31 @@
 import type { IconName } from "../components/Icon";
-import fotoKelasMM from "../assets/images/majors/mm/DKV1.jpg";
-import fotoLandingRPL from "../assets/images/majors/rpl/LandingPageRPL.png";
-import fotoLandingTKJ from "../assets/images/majors/tkj/LandingPageTKJ.png";
-import fotoLandingPKM from "../assets/images/majors/pkm/LandingPagePKM.png";
-import fotoLandingMM from "../assets/images/majors/mm/LandingPageMM.png";
-import fotoLandingTOI from "../assets/images/majors/toi/LandingPageTOI.png";
+// kelas bagian hero
+import fotoKelasMM from "../assets/images/majors/mm/heroImage.jpg";
+import fotoKelasRPL from "../assets/images/majors/rpl/heroImage.jpeg";
+import fotoKelasTKJ from "../assets/images/majors/tkj/heroImage.jpg";
+import fotoKelasPKM from "../assets/images/majors/pkm/heroImage.jpg";
+import fotoKelasTOI from "../assets/images/majors/toi/heroImage.jpeg";
+
+// logo jurusan di pojok kiri atas kartu jurusan
+import logoMM from "../assets/images/logojurusan/logo-mm.webp";
+import logoRPL from "../assets/images/logojurusan/logo-rpl.webp";
+import logoTKJ from "../assets/images/logojurusan/logo-tkj.webp";
+import logoPKM from "../assets/images/logojurusan/logo-pkm.webp";
+import logoTOI from "../assets/images/logojurusan/logo-toi.webp";
+
+// ini bagian landingpage
+import fotoLandingRPL from "../assets/images/majors/rpl/LandingPageRPL.webp";
+import fotoLandingTKJ from "../assets/images/majors/tkj/LandingPageTKJ.webp";
+import fotoLandingPKM from "../assets/images/majors/pkm/LandingPagePKM.webp";
+import fotoLandingMM from "../assets/images/majors/mm/LandingPageMM.webp";
+import fotoLandingTOI from "../assets/images/majors/toi/LandingPageTOI.webp";
+
+// ini bagian card hero di halaman jurusan
+import fotoHeroCardImageMM from "../assets/images/majors/mm/fotoMM.webp";
+import fotoHeroCardImageRPL from "../assets/images/majors/rpl/fotoRPL.webp";
+import fotoHeroCardImageTKJ from "../assets/images/majors/tkj/fotoTKJ.webp";
+import fotoHeroCardImagePKM from "../assets/images/majors/pkm/fotoPKM.webp";
+import fotoHeroCardImageTOI from "../assets/images/majors/toi/fotoTOI.webp";
 
 // MM Photos
 import fotoDevactoMM1 from "../assets/images/majors/mm/devacto-1.jpg";
@@ -85,7 +106,7 @@ export type ShowcaseItem = {
     by: string;       // kelas pembuat karya, contoh: "Kelas XII RPL 1"
     category: string; // jenis karya, tampil sebagai label di pojok foto
     icon: IconName;   // ditampilkan selama belum ada foto
-    image?: string;   // import foto/tangkapan layar karya, contoh: import fotoKasir from "../assets/images/majors/rpl/kasir.png"
+    image?: string;   // import foto/tangkapan layar karya, contoh: import fotoKasir from "../assets/images/majors/rpl/kasir.webp"
 };
 
 export type Major = {
@@ -102,8 +123,10 @@ export type Major = {
     devacto: Devacto; // kegiatan Devacto (pendalaman keahlian setelah jam sekolah) di jurusan ini
     showcase: ShowcaseItem[];
     careers: string[];
-    image?: string; // foto siswa (PNG tanpa background paling bagus), contoh: import fotoRPL from "../assets/images/rpl.png"
+    image?: string; // foto kartu jurusan (potret 3:5), contoh: import fotoRPL from "../assets/images/rpl.webp"
+    logo?: string; // logo jurusan di pojok kiri atas kartu, kalau kosong pakai logo sekolah
     heroImage?: string; // foto kegiatan untuk latar hero (ditampilkan blur), kalau kosong pakai foto gedung sekolah
+    heroCardImage?: string; // foto kegiatan untuk kartu hero (ditampilkan jelas), kalau kosong pakai foto gedung sekolah
 };
 
 // TODO: ganti deskripsi dengan kurikulum asli & tambahkan foto siswa tiap jurusan
@@ -112,6 +135,7 @@ export type Major = {
 export const majors: Major[] = [
     {
         code: "MM",
+        logo: logoMM,
         slug: "multimedia",
         icon: "camera",
         highlight: "Multimedia",
@@ -162,9 +186,11 @@ export const majors: Major[] = [
         careers: ["Desainer Grafis", "Video Editor", "Content Creator", "Fotografer", "Animator", "Motion Designer"],
         image: fotoLandingMM,
         heroImage: fotoKelasMM,
+        heroCardImage: fotoHeroCardImageMM,
     },
     {
         code: "RPL",
+        logo: logoRPL,
         slug: "rekayasa-perangkat-lunak",
         icon: "code",
         highlight: "Rekayasa",
@@ -214,9 +240,12 @@ export const majors: Major[] = [
         ],
         careers: ["Web Developer", "Mobile App Developer", "Software Engineer", "UI/UX Designer", "Software Tester"],
         image: fotoLandingRPL,
+        heroImage: fotoKelasRPL,
+        heroCardImage: fotoHeroCardImageRPL
     },
     {
         code: "TKJ",
+        logo: logoTKJ,
         slug: "teknik-komputer-jaringan",
         icon: "network",
         highlight: "Teknik Komputer",
@@ -265,10 +294,13 @@ export const majors: Major[] = [
             { title: "Perakitan PC Lab Komputer", by: "Kelas X TKJ 1", category: "Perakitan", icon: "cpu", image: fotoShowcaseTKJ6 },
         ],
         careers: ["Network Administrator", "IT Support", "System Administrator", "Teknisi Komputer", "Network Engineer"],
-        image: fotoLandingTKJ
+        image: fotoLandingTKJ,
+        heroImage: fotoKelasTKJ,
+        heroCardImage: fotoHeroCardImageTKJ
     },
     {
         code: "PKM",
+        logo: logoPKM,
         slug: "perbankan-keuangan-mikro",
         icon: "bank",
         highlight: "Perbankan",
@@ -317,10 +349,13 @@ export const majors: Major[] = [
             { title: "Panduan Produk Tabungan", by: "Kelas X PKM 1", category: "Layanan Nasabah", icon: "book", image: fotoShowcasePKM6 },
         ],
         careers: ["Teller", "Customer Service Bank", "Staf Administrasi Keuangan", "Staf Koperasi", "Staf Akuntansi"],
-        image: fotoLandingPKM
+        image: fotoLandingPKM,
+        heroImage: fotoKelasPKM,
+        heroCardImage: fotoHeroCardImagePKM
     },
     {
         code: "TOI",
+        logo: logoTOI,
         slug: "teknik-otomasi-industri",
         icon: "cpu",
         highlight: "Teknik Otomasi",
@@ -369,6 +404,8 @@ export const majors: Major[] = [
             { title: "Pengukur Suhu Ruang", by: "Kelas X TOI 1", category: "IoT", icon: "monitor", image: fotoShowcaseTOI6 },
         ],
         careers: ["Teknisi Otomasi", "Teknisi Listrik Industri", "Operator Mesin Produksi", "Maintenance Engineer"],
-        image: fotoLandingTOI
+        image: fotoLandingTOI,
+        heroImage: fotoKelasTOI,
+        heroCardImage: fotoHeroCardImageTOI
     },
 ];
