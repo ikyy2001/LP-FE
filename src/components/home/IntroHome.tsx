@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import videoPenus from "../../assets/videos/header-content-small.mp4";
 import { visi, misiHighlights } from "../../data/profile";
 import Icon from "../Icon";
 import SketchFrame, { SketchArrow, SketchCorner } from "../SketchFrame";
@@ -31,7 +30,7 @@ export default function IntroHome() {
                         <video
                             ref={videoRef}
                             className="w-full aspect-video object-contain rounded-card bg-brand-softmist shadow-2xl"
-                            src={videoPenus}
+                            src="https://cld.c8nayrntn2.qzz.io/header-content-small.mp4"
                             autoPlay
                             muted
                             loop
@@ -45,7 +44,7 @@ export default function IntroHome() {
                         <button
                             type="button"
                             onClick={togglePlay}
-                            aria-label={playing ? "Jeda video" : "Putar video"}
+                            aria-llabel={playing ? "Jeda video" : "Putar video"}
                             className="absolute bottom-3 right-3 md:bottom-4 md:right-4 w-11 h-11 rounded-full bg-brand-ink/60 text-white ring-1 ring-white/20 backdrop-blur flex items-center justify-center transition-colors hover:bg-brand-darkred focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-darkred"
                         >
                             <Icon name={playing ? "pause" : "play"} className="w-5 h-5 fill-current" />
@@ -83,7 +82,7 @@ export default function IntroHome() {
                         <Link
                             to="/tentang"
                             className="group inline-flex items-center gap-3 rounded-full bg-linear-to-r  px-7 py-3.5 text-sm font-semibold text-brand-darkred transition-transform hover:-translate-y-0.5"
-                        > 
+                        >
                             <SketchFrame>
                                 {/* SketchArrow berupa block, jadi teks & panah dijejerkan dengan inline-flex supaya tidak turun baris */}
                                 <span className="inline-flex items-center gap-3">
