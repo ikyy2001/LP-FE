@@ -5,14 +5,16 @@ import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_BYTES, formatFileSize } from "../lib/fo
 import type { ImageValue } from "../lib/forms";
 
 // Foto tunggal (berita & program) dengan pratinjau. currentUrl = foto yang sudah tersimpan di server.
-// URL pratinjau dibuat saat memilih berkas (event handler), bukan saat render
-export default function ImageInput({ id, currentUrl, value, onChange, error, aspect = "aspect-video" }: {
+// URL pratinjau dibuat saat memilih berkas (event handler), bukan saat render.
+// emptyHint = apa yang tampil di situs selama belum ada foto
+export default function ImageInput({ id, currentUrl, value, onChange, error, aspect = "aspect-video", emptyHint = "Tanpa foto, situs menampilkan ikon." }: {
     id: string;
     currentUrl: string | null;
     value: ImageValue;
     onChange: (value: ImageValue) => void;
     error?: string;
     aspect?: string;
+    emptyHint?: string;
 }) {
     const [sizeError, setSizeError] = useState<string | null>(null);
     const shown = value.preview ?? (value.remove ? null : currentUrl);
@@ -76,7 +78,7 @@ export default function ImageInput({ id, currentUrl, value, onChange, error, asp
             {message ? (
                 <p className="mt-1.5 text-sm text-brand-signal">{message}</p>
             ) : (
-                <p className="mt-1.5 text-xs text-brand-ink/55">JPG, PNG, atau WEBP, maksimal 5 MB. Tanpa foto, situs menampilkan ikon.</p>
+                <p className="mt-1.5 text-xs text-brand-ink/55">JPG, PNG, atau WEBP, maksimal 5 MB. {emptyHint}</p>
             )}
         </div>
     )

@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import heroVideo from "../../assets/videos/header-content-small.mp4";
 import { SketchArrow, SketchUnderline } from "../SketchFrame";
+import { smoothScrollTo, stopSmoothScroll, useScrollFrame } from "../../lib/smoothScroll";
 
 export default function HeroHome() {
     const endRef = useRef<HTMLDivElement>(null);
+    const sectionRef = useRef<HTMLElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const overlayRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const hintRef = useRef<HTMLButtonElement>(null);
+    const pausedByScroll = useRef(false);
     const [shown, setShown] = useState(false);
 
     const nextSectionTop = () =>
@@ -16,38 +22,25 @@ export default function HeroHome() {
 
     useEffect(() => {
         const DELAY = 3000;
-        let frame = 0;
         let cancelled = false;
+        let animating = false;
 
+        // Pengguna mulai scroll/klik/tekan tombol sendiri: batalkan scroll otomatis
         const cancel = () => {
             cancelled = true;
             window.clearTimeout(timer);
-            cancelAnimationFrame(frame);
-        };
-
-        const scrollTo = (target: number) => {
-            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-                window.scrollTo(0, target);
-                return;
+            if (animating) {
+                animating = false;
+                stopSmoothScroll();
             }
-
-            const from = window.scrollY;
-            const duration = 1600;
-            const start = performance.now();
-            const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-
-            const step = (now: number) => {
-                if (cancelled) return;
-                const t = Math.min((now - start) / duration, 1);
-                window.scrollTo(0, from + (target - from) * ease(t));
-                if (t < 1) frame = requestAnimationFrame(step);
-            };
-            frame = requestAnimationFrame(step);
         };
+
+        const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
         const timer = window.setTimeout(() => {
             if (cancelled || window.scrollY > 0) return;
-            scrollTo(nextSectionTop());
+            animating = true;
+            smoothScrollTo(nextSectionTop(), { duration: 1.6, easing: ease, onComplete: () => (animating = false) });
         }, DELAY);
 
         const events = ["wheel", "touchstart", "keydown", "mousedown"] as const;
@@ -58,13 +51,50 @@ export default function HeroHome() {
         };
     }, []);
 
+    // Efek "tirai": saat section berikutnya naik menutupi hero, video pelan-pelan membesar & menggelap,
+    // judul ikut naik lalu memudar. Begitu hero tertutup penuh, hero disembunyikan & videonya dijeda,
+    // supaya browser tidak terus menggambar video di belakang seluruh halaman (sumber utama scroll terasa berat).
+    useScrollFrame(({ scroll }) => {
+        const section = sectionRef.current;
+        const video = videoRef.current;
+        if (!section || !video) return;
+
+        const height = section.offsetHeight;
+        // +48: sudut membulat section berikutnya masih memperlihatkan sedikit hero
+        const covered = scroll > height + 48;
+        section.style.visibility = covered ? "hidden" : "";
+        // Hanya putar lagi video yang tadi dijeda di sini (bukan yang autoplay-nya diblokir browser)
+        if (covered && !video.paused) {
+            video.pause();
+            pausedByScroll.current = true;
+        } else if (!covered && pausedByScroll.current) {
+            pausedByScroll.current = false;
+            void video.play().catch(() => {});
+        }
+
+        if (covered || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        const p = Math.min(Math.max(scroll / height, 0), 1);
+        video.style.transform = `scale(${(1 + p * 0.12).toFixed(4)})`;
+        if (overlayRef.current) overlayRef.current.style.opacity = (0.55 + p * 0.3).toFixed(3);
+        if (contentRef.current) {
+            contentRef.current.style.transform = `translate3d(0, ${(p * -22).toFixed(2)}vh, 0) scale(${(1 - p * 0.06).toFixed(4)})`;
+            contentRef.current.style.opacity = Math.max(1 - p * 1.6, 0).toFixed(3);
+        }
+        if (hintRef.current) {
+            hintRef.current.style.opacity = Math.max(1 - p * 4, 0).toFixed(3);
+            hintRef.current.style.visibility = p > 0.25 ? "hidden" : "";
+        }
+    });
+
     return(
         <>
             {/* Video menempel di layar, lalu ditutup oleh section berikutnya */}
-            <section className="sticky top-0 h-screen w-full overflow-hidden bg-brand-ink">
+            <section ref={sectionRef} className="sticky top-0 h-screen w-full overflow-hidden bg-brand-ink">
                 <video
-                    className="absolute inset-0 w-full h-full object-cover"
-                    src={heroVideo}
+                    ref={videoRef}
+                    className="absolute inset-0 w-full h-full object-cover will-change-transform"
+                    src="https://cld.c8nayrntn2.qzz.io/header-content-small.mp4"
                     autoPlay
                     muted
                     loop
@@ -73,9 +103,9 @@ export default function HeroHome() {
                     aria-hidden="true"
                 />
 
-                <div className="absolute inset-0 bg-brand-ink opacity-55" />
+                <div ref={overlayRef} className="absolute inset-0 bg-brand-ink opacity-55" />
 
-                <div className="absolute inset-0 flex items-center justify-center px-4">
+                <div ref={contentRef} className="absolute inset-0 flex items-center justify-center px-4 will-change-transform">
                     <div
                         className={`text-center transition-all duration-1000 ease-out motion-reduce:transition-none ${
                             shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
@@ -91,18 +121,16 @@ export default function HeroHome() {
                             PELITA NUSANTARA
                         </h1>
                         <p className="text-xs sm:text-sm md:text-base uppercase tracking-[0.25em] font-semibold text-brand-mist/80">
-                            <SketchUnderline size="lg" tone="text-brand-signal" delay={700}>Mewujudkan Generasi Vokasi Terampil, Berkarakter, dan Siap Kerja.</SketchUnderline>
+                            <SketchUnderline size="lg" tone="text-brand-signal" delay={700}>Terampil, Entrepreneur, Religius</SketchUnderline>
                         </p>
                     </div>
                 </div>
 
                 {/* Petunjuk scroll ke bawah */}
                 <button
+                    ref={hintRef}
                     type="button"
-                    onClick={() => {
-                        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-                        window.scrollTo({ top: nextSectionTop(), behavior: reduce ? "auto" : "smooth" });
-                    }}
+                    onClick={() => smoothScrollTo(nextSectionTop())}
                     aria-label="Scroll ke bawah"
                     className="group absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/80 transition-colors hover:text-white"
                 >

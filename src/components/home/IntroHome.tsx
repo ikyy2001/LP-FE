@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import videoPenus from "../../assets/videos/header-content-small.mp4";
 import { visi, misiHighlights } from "../../data/profile";
 import Icon from "../Icon";
 import SketchFrame, { SketchArrow, SketchCorner } from "../SketchFrame";
@@ -26,12 +25,12 @@ export default function IntroHome() {
 
                 <div className="mt-12 md:mt-16 grid gap-10 lg:gap-14 lg:grid-cols-[5fr_6fr] lg:items-center">
                     {/* Video di kanan pada desktop, di atas teks pada HP & tablet */}
-                    <div className="relative lg:order-last">
+                    <div data-speed="-0.05" className="relative lg:order-last">
                         {/* aspect-video = rasio asli video (16:9), jadi video tampil utuh tanpa terpotong */}
                         <video
                             ref={videoRef}
                             className="w-full aspect-video object-contain rounded-card bg-brand-softmist shadow-2xl"
-                            src={videoPenus}
+                            src="https://cld.c8nayrntn2.qzz.io/header-content-small.mp4"
                             autoPlay
                             muted
                             loop
@@ -83,7 +82,7 @@ export default function IntroHome() {
                         <Link
                             to="/tentang"
                             className="group inline-flex items-center gap-3 rounded-full bg-linear-to-r  px-7 py-3.5 text-sm font-semibold text-brand-darkred transition-transform hover:-translate-y-0.5"
-                        > 
+                        >
                             <SketchFrame>
                                 {/* SketchArrow berupa block, jadi teks & panah dijejerkan dengan inline-flex supaya tidak turun baris */}
                                 <span className="inline-flex items-center gap-3">

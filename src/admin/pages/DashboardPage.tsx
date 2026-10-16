@@ -69,6 +69,18 @@ export default function DashboardPage() {
                         Program Unggulan
                     </Link>
                     <Link
+                        to="/admin/talent-day"
+                        className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                    >
+                        Talent Day
+                    </Link>
+                    <Link
+                        to="/admin/ekskul"
+                        className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                    >
+                        Ekstrakurikuler
+                    </Link>
+                    <Link
                         to="/admin/fasilitas"
                         className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                     >
@@ -133,7 +145,7 @@ export default function DashboardPage() {
                                         SMK Plus Pelita Nusantara Bogor
                                     </span>
                                 </div>
-                                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
+                                <h1 className="text-2xl sm:text-3xl font-bold text-[#0F172A] tracking-tight">
                                     Halo, {user?.name ?? "Administrator"} 👋
                                 </h1>
                                 <p className="text-xs sm:text-sm text-[#64748B] mt-2 leading-relaxed">
@@ -149,7 +161,7 @@ export default function DashboardPage() {
                             <div className="bg-slate-50/90 border border-slate-200/70 rounded-2xl p-4 sm:p-5 sm:min-w-[280px] shadow-2xs flex flex-col justify-between">
                                 <div className="flex items-center justify-between gap-3 mb-2">
                                     <span className="text-xs font-semibold text-slate-700">Rasio Publikasi Berita</span>
-                                    <span className="text-sm font-extrabold text-[#0F172A]">{publishedRate}%</span>
+                                    <span className="text-sm font-bold text-[#0F172A]">{publishedRate}%</span>
                                 </div>
 
                                 {/* Thin Maroon Progress Bar with Rounded Ends */}
@@ -168,7 +180,7 @@ export default function DashboardPage() {
                                         <span>Kelola berita sekarang</span>
                                         <span>&rarr;</span>
                                     </Link>
-                                    <span className="text-[10px] font-mono text-slate-400">
+                                    <span className="text-[10px] tabular-nums text-slate-400">
                                         {publishedNews}/{totalNews}
                                     </span>
                                 </div>
@@ -190,7 +202,7 @@ export default function DashboardPage() {
                             </div>
 
                             <div className="my-2">
-                                <div className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
+                                <div className="text-3xl sm:text-4xl font-bold text-[#0F172A] tracking-tight">
                                     {stats.news.total}
                                 </div>
                                 <div className="text-xs text-slate-500 mt-1">Artikel & pembaruan berita</div>
@@ -225,7 +237,7 @@ export default function DashboardPage() {
                             </div>
 
                             <div className="my-2">
-                                <div className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
+                                <div className="text-3xl sm:text-4xl font-bold text-[#0F172A] tracking-tight">
                                     {stats.news.draft}
                                 </div>
                                 <div className="text-xs text-slate-500 mt-1">Belum dipublikasikan ke situs</div>
@@ -257,7 +269,7 @@ export default function DashboardPage() {
                             </div>
 
                             <div className="my-2">
-                                <div className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
+                                <div className="text-3xl sm:text-4xl font-bold text-[#0F172A] tracking-tight">
                                     {stats.programs}
                                 </div>
                                 {/* Dual Color Progress Bar (Navy to Maroon) */}
@@ -289,7 +301,7 @@ export default function DashboardPage() {
                             </div>
 
                             <div className="my-2">
-                                <div className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
+                                <div className="text-3xl sm:text-4xl font-bold text-[#0F172A] tracking-tight">
                                     {stats.facilities}
                                 </div>
                                 <div className="text-xs text-slate-500 mt-1">Ruang lab & bengkel praktik</div>
@@ -369,7 +381,7 @@ export default function DashboardPage() {
                             {/* Table Header Strip */}
                             <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                                 <div>
-                                    <h2 className="font-extrabold text-base text-[#0F172A] tracking-tight">
+                                    <h2 className="font-bold text-base text-[#0F172A] tracking-tight">
                                         Berita Terakhir Diubah
                                     </h2>
                                     <p className="text-xs text-slate-500 mt-0.5">Artikel dan publikasi terbaru di situs</p>
@@ -468,7 +480,7 @@ export default function DashboardPage() {
                             {/* Header Strip */}
                             <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                                 <div>
-                                    <h2 className="font-extrabold text-base text-[#0F172A] tracking-tight">
+                                    <h2 className="font-bold text-base text-[#0F172A] tracking-tight">
                                         Distribusi Konten
                                     </h2>
                                     <p className="text-xs text-slate-500 mt-0.5">Sebaran dan status konten portal</p>
@@ -488,7 +500,7 @@ export default function DashboardPage() {
                                             <span className="text-[11px] text-slate-400">Tampil untuk umum</span>
                                         </div>
                                         <div className="text-right">
-                                            <span className="font-mono font-bold text-xs text-[#8B1D24]">
+                                            <span className="tabular-nums font-bold text-xs text-[#8B1D24]">
                                                 {publishedNews}
                                             </span>
                                             <span className="text-[11px] text-slate-400"> / {totalNews}</span>
@@ -514,7 +526,7 @@ export default function DashboardPage() {
                                             <span className="text-[11px] text-slate-400">Belum dipublikasikan</span>
                                         </div>
                                         <div className="text-right">
-                                            <span className="font-mono font-bold text-xs text-amber-600">{draftNews}</span>
+                                            <span className="tabular-nums font-bold text-xs text-amber-600">{draftNews}</span>
                                             <span className="text-[11px] text-slate-400"> / {totalNews}</span>
                                         </div>
                                     </div>
@@ -595,7 +607,7 @@ export default function DashboardPage() {
                     <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm">
                         <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
                             <div>
-                                <span className="font-extrabold text-sm text-[#0F172A] tracking-tight block">
+                                <span className="font-bold text-sm text-[#0F172A] tracking-tight block">
                                     Alur Kerja Administrator Landing Page
                                 </span>
                                 <span className="text-xs text-slate-400">SMK Plus Pelita Nusantara Bogor</span>

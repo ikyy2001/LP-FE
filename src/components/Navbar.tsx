@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { navItems, ppdbLink, type MenuGroup, type MenuLink } from "../data/navigation";
-import logoSekolah from "../assets/images/logosmkpenus.png";
+import logoPenus from "/logo-penus.png";
 import { SketchArrow, SketchUnderline } from "./SketchFrame";
 
 type IsActive = (link: MenuLink) => boolean;
@@ -59,21 +59,13 @@ export default function Navbar() {
                 }`}
                 aria-label="Navigasi Utama"
             >
-                <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
+                <Link to="/" className="flex items-center group">
                     <img
-                        src={logoSekolah}
-                        alt="Logo SMK Pelita Nusantara"
-                        className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow-xs group-hover:scale-105 transition-transform shrink-0"
+                        src={logoPenus}
+                        alt="SMK Plus Pelita Nusantara"
+                        className="h-10 sm:h-11 md:h-12 w-auto object-contain drop-shadow-xs group-hover:scale-105 transition-transform shrink-0"
                         loading="eager"
                     />
-                    <div className="flex flex-col">
-                        <span className="font-display text-base font-bold uppercase tracking-wide text-brand-ink leading-tight group-hover:text-brand-darkred transition-colors">
-                            SMK PLUS PELITA NUSANTARA
-                        </span>
-                        <span className="text-[10px] uppercase font-semibold tracking-wider text-brand-darkred mt-0.5">
-                            We Are Different
-                        </span>
-                    </div>
                 </Link>
 
                 <ul className="hidden lg:flex items-center gap-1 xl:gap-1.5">
@@ -130,16 +122,14 @@ export default function Navbar() {
                 ref={dialogRef}
                 aria-label="Menu navigasi"
                 onClose={closeMenu}
+                // Lenis tidak ikut memproses scroll di dalam menu, jadi halaman di belakangnya tetap diam
+                data-lenis-prevent
                 className="pointer-events-auto size-full max-w-none max-h-none flex-col overscroll-contain bg-brand-darkred/95 backdrop-blur-lg p-6 sm:p-8 text-brand-mist open:flex"
             >
                 <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <img src={logoSekolah} alt="" className="w-9 h-9 object-contain drop-shadow shrink-0" />
-                        <div className="flex flex-col">
-                            <span className="font-display text-base font-bold uppercase tracking-wide text-white leading-tight">SMK PLUS PELITA NUSANTARA</span>
-                            <span className="text-[10px] uppercase font-semibold tracking-wider text-brand-mist/70 mt-0.5">We Are Different</span>
-                        </div>
-                    </div>
+                    <Link to="/" onClick={closeMenu} className="flex items-center">
+                        <img src={logoPenus} alt="SMK Plus Pelita Nusantara" className="h-10 w-auto object-contain drop-shadow shrink-0" />
+                    </Link>
                     <button
                         type="button"
                         onClick={closeMenu}
